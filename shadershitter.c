@@ -11,6 +11,7 @@
 #include "stringlib.h"
 #include "framerate.h"
 #include "shader.h"
+#include "state.h"
 #define HOOKDLSYM
 
 #ifdef HOOKDLSYM
@@ -23,6 +24,15 @@ void init(void){
 	if(!glShaderSource_orig)glShaderSource_orig = real_dlsym(RTLD_NEXT, "glShaderSource");
 	if(!glXSwapBuffers_orig)glXSwapBuffers_orig = real_dlsym(RTLD_NEXT, "glXSwapBuffers");
 	if(!glCreateShader_orig)glCreateShader_orig = real_dlsym(RTLD_NEXT, "glCreateShader");
+	if(!glActiveTexture_orig)glActiveTexture_orig = real_dlsym(RTLD_NEXT, "glActiveTexture");
+	if(!glAlphaFunc_orig)glAlphaFunc_orig = real_dlsym(RTLD_NEXT, "glAlphaFunc");
+	if(!glBindTexture_orig)glBindTexture_orig = real_dlsym(RTLD_NEXT, "glBindTexture");
+	if(!glBindVertexArray_orig)glBindVertexArray_orig = real_dlsym(RTLD_NEXT, "glBindVertexArray");
+	if(!glBlendFunc_orig)glBlendFunc_orig = real_dlsym(RTLD_NEXT, "glBlendFunc");
+	if(!glCullFace_orig)glCullFace_orig = real_dlsym(RTLD_NEXT, "glCullFace");
+	if(!glDepthFunc_orig)glDepthFunc_orig = real_dlsym(RTLD_NEXT, "glDepthFunc");
+	if(!glDepthMask_orig)glDepthMask_orig = real_dlsym(RTLD_NEXT, "glDepthMask");
+	if(!glUseProgram_orig)glUseProgram_orig = real_dlsym(RTLD_NEXT, "glUseProgram");
 }
 
 

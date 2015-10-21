@@ -11,6 +11,8 @@
 
 #include "shadershitter.h"
 
+#include "state.h"
+
 struct timeval tem;
 
 int framecount = -1;
@@ -35,6 +37,7 @@ void glXSwapBuffers(Display * dpy, GLXDrawable drawable){
 			float gsec = milli/1000.0;
 			float fps = (float)framecount/gsec;
 			printf("%i frames in %f milliseconds = %f fps\n", framecount, milli, fps);
+			state_status();
 //			tem = tem2;
 			framecount = -1;
 		}
