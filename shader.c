@@ -30,7 +30,7 @@ typedef struct program_s {
 
 
 void (*glShaderSource_orig)(GLuint shader, GLsizei count, const GLchar ** string, const GLint * length)=NULL;
-void glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length){
+void APIENTRY glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length){
 	if(!glShaderSource_orig)init();
 
 //	printf("shadershitter activated\n");
@@ -44,7 +44,7 @@ void glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const G
 }
 
 GLuint (*glCreateShader_orig)(GLenum type) = NULL;
-GLuint glCreateShader(GLenum type){
+GLuint APIENTRY glCreateShader(GLenum type){
 	if(!glCreateShader_orig)init();
 	GLuint ret = glCreateShader_orig(type);
 	printf("creating shader\n");

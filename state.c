@@ -16,6 +16,10 @@
 #define STATESUBOBLOCKCOUNT 2
 #define STATESTENABLEDTRACK char
 
+#define GL_GLEXT_PROTOTYPES
+#define GLX_GLXEXT_PROTOTYPES
+
+
 typedef struct glstate_s {
 	char enabledstates;
 

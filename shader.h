@@ -1,8 +1,8 @@
 #ifndef SHADERHEADER
 #define SHADERHEADER
-	extern void (*glShaderSource_orig)(GLuint shader, GLsizei count, const GLchar ** string, const GLint * length);
-	void glShaderSource(GLuint shader, GLsizei count, const GLchar ** string, const GLint * length);
+	extern void (*glShaderSource_orig)(GLuint, GLsizei, const GLchar **, const GLint *);
+	void APIENTRY glShaderSource(GLuint, GLsizei, const GLchar **, const GLint *);
 
-	extern GLuint (*glCreateShader_orig)(GLenum type);
-	GLuint glCreateShader(GLenum type);
+	extern GLuint (*glCreateShader_orig)(GLenum);
+	GLuint APIENTRY glCreateShader(GLenum);
 #endif
