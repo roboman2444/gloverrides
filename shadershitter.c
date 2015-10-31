@@ -9,12 +9,14 @@
 
 #define __USE_GNU
 #include <dlfcn.h>
+#include "globaldefs.h"
 #include "stringlib.h"
 #include "framerate.h"
 #include "shader.h"
 #include "state.h"
+#include "color.h"
 
-//#define HOOKDLSYM
+#define HOOKDLSYM
 
 #ifdef HOOKDLSYM
 static void * (* real_dlsym)(void *, const char *) = NULL;
@@ -32,9 +34,11 @@ void init(void){
 	if(!glBindVertexArray_orig)glBindVertexArray_orig = real_dlsym(RTLD_NEXT, "glBindVertexArray");
 	if(!glBlendFunc_orig)glBlendFunc_orig = real_dlsym(RTLD_NEXT, "glBlendFunc");
 	if(!glCullFace_orig)glCullFace_orig = real_dlsym(RTLD_NEXT, "glCullFace");
+	if(!glColor4fv_orig)glColor4fv_orig = real_dlsym(RTLD_NEXT, "glColor4fv");
 	if(!glDepthFunc_orig)glDepthFunc_orig = real_dlsym(RTLD_NEXT, "glDepthFunc");
 	if(!glDepthMask_orig)glDepthMask_orig = real_dlsym(RTLD_NEXT, "glDepthMask");
 	if(!glUseProgram_orig)glUseProgram_orig = real_dlsym(RTLD_NEXT, "glUseProgram");
+	state.color[0] = 1.0; state.color[1] = 1.0; state.color[2] = 1.0; state.color[3] = 1.0;
 }
 static void * (*glutGetProcAddress_orig)(const char * procname) = NULL;
 

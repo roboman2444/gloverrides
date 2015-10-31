@@ -19,7 +19,7 @@
 //#include <string.h> /* memset */
 //#include <unistd.h> /* close */
 
-//#include "types.h"
+#include "types.h"
 
 //global variables
 

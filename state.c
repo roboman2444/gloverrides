@@ -3,60 +3,12 @@
 #include <GL/gl.h>
 #include "globaldefs.h"
 #include "state.h"
+#include "color.h"
 #include "shadershitter.h"
-
-#define STATESENABLEDEPTH 1
-#define STATESENABLEBLEND 2
-#define STATESENABLECULLFACE 4
-#define STATESENABLEMULTISAMPLE 8
-#define STATESENABLEALPHATEST 16
-
-
-#define STATESTEXTUREUNITCOUNT 8
-#define STATESUBOBLOCKCOUNT 2
-#define STATESTENABLEDTRACK char
 
 #define GL_GLEXT_PROTOTYPES
 #define GLX_GLXEXT_PROTOTYPES
 
-
-typedef struct glstate_s {
-	char enabledstates;
-
-	GLenum blendsource;
-	GLenum blenddest;
-
-	GLenum depthfunc;
-
-	GLenum cullface;
-
-	GLboolean depthmask;
-
-	GLenum alphafunc;
-	GLclampf alpharef;
-
-	GLuint vaoid;
-
-	GLuint vboid;
-	GLenum vbotype;
-	GLuint vborangei;
-	GLintptr vborangeo;
-	GLsizeiptr vboranges;
-
-	GLuint shaderid;
-
-//	GLenum activetexture;
-	unsigned char activetexture;
-	//todo i only need one array... textureid. If different and not 0, change
-	//IF I CHANGE STATESTEXTUREUNITCOUNT, I HAVE TO MAKE THIS BIGGER
-//	STATESTENABLEDTRACK enabledtextures; //only used when applying a whole state
-	GLuint textureunitid[STATESTEXTUREUNITCOUNT];
-	GLenum textureunittarget[STATESTEXTUREUNITCOUNT];
-
-	GLuint uboblockid[STATESUBOBLOCKCOUNT];
-	GLintptr uboblockrangeo[STATESUBOBLOCKCOUNT];
-	GLsizeiptr uboblockranges[STATESUBOBLOCKCOUNT];
-} glstate_t;
 
 glstate_t state = {0};
 
@@ -72,6 +24,8 @@ unsigned int bindvertexarraycalls = 0;
 unsigned int bindvertexarrayredun = 0;
 unsigned int blendfunccalls = 0;
 unsigned int blendfuncredun = 0;
+unsigned int colorcalls = 0;
+unsigned int colorredun = 0;
 unsigned int cullfacecalls = 0;
 unsigned int cullfaceredun = 0;
 unsigned int depthfunccalls = 0;
@@ -88,6 +42,7 @@ void state_status(void){
 	printf("\tglBindTexture redundant/total:\t%u/%u\n", bindtextureredun, bindtexturecalls);
 	printf("\tglBindVertexArray redundant/total:\t%u/%u\n", bindvertexarrayredun, bindvertexarraycalls);
 	printf("\tglBlendFunc redundant/total:\t%u/%u\n", blendfuncredun, blendfunccalls);
+	printf("\tglColor* redundant/total:\t%u/%u\n", colorredun, colorcalls);
 	printf("\tglCullFace redundant/total:\t%u/%u\n", cullfaceredun, cullfacecalls);
 	printf("\tglDepthFunc redundant/total:\t%u/%u\n", depthfuncredun, depthfunccalls);
 	printf("\tglDepthMask redundant/total:\t%u/%u\n", depthmaskredun, depthmaskcalls);
@@ -98,6 +53,7 @@ void state_status(void){
 	bindvertexarraycalls = bindvertexarrayredun = 0;
 	blendfunccalls = blendfuncredun = 0;
 	cullfacecalls = cullfaceredun = 0;
+	colorcalls = colorredun = 0;
 	depthfunccalls = depthfuncredun = 0;
 	depthmaskcalls = depthmaskredun = 0;
 	useprogramcalls = useprogramredun = 0;

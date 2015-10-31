@@ -1,7 +1,7 @@
 CC = gcc
 LDFLAGS =-ldl -shared -Wl,-soname,shadershitter.so
 CFLAGS = -Wall -Ofast -fstrict-aliasing -march=native -fPIC
-OBJECTS = shadershitter.o stringlib.o framerate.o shader.o state.o
+OBJECTS = shadershitter.o stringlib.o framerate.o shader.o state.o mathlib.o color.o
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
