@@ -27,6 +27,8 @@ static void * (* real_dlsym)(void *, const char *) = NULL;
 void init(void){
 	if(!glShaderSource_orig)glShaderSource_orig = real_dlsym(RTLD_NEXT, "glShaderSource");
 	if(!glXSwapBuffers_orig)glXSwapBuffers_orig = real_dlsym(RTLD_NEXT, "glXSwapBuffers");
+	if(!glXSwapInterval_orig)glXSwapInterval_orig = real_dlsym(RTLD_NEXT, "glXSwapIntervalEXT");
+	if(!glXSwapIntervalSGI_orig)glXSwapIntervalSGI_orig = real_dlsym(RTLD_NEXT, "glXSwapIntervalSGI");
 	if(!glCreateShader_orig)glCreateShader_orig = real_dlsym(RTLD_NEXT, "glCreateShader");
 	if(!glActiveTexture_orig)glActiveTexture_orig = real_dlsym(RTLD_NEXT, "glActiveTexture");
 	if(!glAlphaFunc_orig)glAlphaFunc_orig = real_dlsym(RTLD_NEXT, "glAlphaFunc");
@@ -54,20 +56,28 @@ __GLXextFuncPtr glXGetProcAddress(const GLubyte * procname){
 	if(!glXGetProcAddress_orig)glXGetProcAddress_orig = real_dlsym(RTLD_NEXT, "glXGetProcAddress");
 
 	if(string_testEqualN("glShaderSource", (char*)procname, 14)){
-		printf("replaced %s\n", procname);
 		if(!glShaderSource_orig)glShaderSource_orig = glXGetProcAddress_orig((GLubyte *)"glShaderSource");
+		printf("replaced %s\n", procname);
 		return (__GLXextFuncPtr)glShaderSource;
 	} else if(string_testEqualN("glUseProgram", (char*)procname, 12)){
-		printf("replaced %s\n", procname);
 		if(!glUseProgram_orig)glUseProgram_orig = glXGetProcAddress_orig((GLubyte *)"glUseProgram");
+		printf("replaced %s\n", procname);
 		return (__GLXextFuncPtr)glUseProgram;
 	} else if(string_testEqualN("glXSwapBuffers", (char*)procname, 14)){
-		printf("replaced %s\n", procname);
 		if(!glXSwapBuffers_orig)glXSwapBuffers_orig = glXGetProcAddress_orig((GLubyte *)"glXSwapBuffers");
-		return (__GLXextFuncPtr)glXSwapBuffers;
-	} else if(string_testEqualN("glCreateShader", (char*)procname, 14)){
 		printf("replaced %s\n", procname);
+		return (__GLXextFuncPtr)glXSwapBuffers;
+	} else if(string_testEqualN("glXSwapIntervalEXT", (char*)procname, 18)){
+		if(!glXSwapInterval_orig)glXSwapInterval_orig = glXGetProcAddress_orig((GLubyte *)"glXSwapIntervalEXT");
+		printf("replaced %s\n", procname);
+		return (__GLXextFuncPtr)glXSwapInterval;
+	} else if(string_testEqualN("glXSwapIntervalSGI", (char*)procname, 18) || string_testEqualN("glXSwapIntervalMESA", (char*) procname, 19)){
+		if(!glXSwapIntervalSGI_orig)glXSwapIntervalSGI_orig = glXGetProcAddress_orig((GLubyte *)"glXSwapIntervalSGI");
+		printf("replaced %s\n", procname);
+		return (__GLXextFuncPtr)glXSwapIntervalSGI;
+	} else if(string_testEqualN("glCreateShader", (char*)procname, 14)){
 		if(!glCreateShader_orig)glCreateShader_orig = glXGetProcAddress_orig((GLubyte *)"glCreateShader");
+		printf("replaced %s\n", procname);
 		return (__GLXextFuncPtr)glCreateShader;
 	}
 	return glXGetProcAddress_orig(procname);

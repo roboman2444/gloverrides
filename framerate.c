@@ -18,6 +18,20 @@ struct timeval tem;
 
 int framecount = -1;
 
+void (*glXSwapInterval_orig)(Display * dpy, GLXDrawable drawable, int interval) = NULL;
+
+void glXSwapInterval(Display * dpy, GLXDrawable drawable, int interval){
+	if(!glXSwapInterval_orig) init();
+	glXSwapInterval_orig(dpy, drawable, 0);
+}
+
+void (*glXSwapIntervalSGI_orig)(int interval) = NULL;
+
+void glXSwapIntervalSGI(int interval){
+	if(!glXSwapIntervalSGI_orig) init();
+	glXSwapIntervalSGI_orig(0);
+}
+
 void (*glXSwapBuffers_orig)(Display * dpy, GLXDrawable drawable) = NULL;
 
 void glXSwapBuffers(Display * dpy, GLXDrawable drawable){
