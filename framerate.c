@@ -10,7 +10,7 @@
 #include "framerate.h"
 
 #include "globaldefs.h"
-#include "shadershitter.h"
+#include "gloverrides.h"
 
 #include "state.h"
 

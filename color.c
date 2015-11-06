@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <GL/gl.h>
 #include "globaldefs.h"
-#include "shadershitter.h"
+#include "gloverrides.h"
 #include "state.h"
 #include "color.h"
 #include "mathlib.h"

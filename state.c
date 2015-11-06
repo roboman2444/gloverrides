@@ -4,7 +4,7 @@
 #include "globaldefs.h"
 #include "state.h"
 #include "color.h"
-#include "shadershitter.h"
+#include "gloverrides.h"
 
 #define GL_GLEXT_PROTOTYPES
 #define GLX_GLXEXT_PROTOTYPES
