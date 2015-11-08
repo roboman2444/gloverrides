@@ -3,6 +3,7 @@
 #include <string.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include "globaldefs.h"
 #include "shader.h"
 
 #include "gloverrides.h"
@@ -19,6 +20,10 @@ typedef struct rule_s {
 	char ** replace;
 	int type;
 } rule_t;
+
+
+unsigned int numrules = 0;
+rule_t * listrules = 0;
 
 //shader types
 //0 = not a shader
@@ -43,6 +48,49 @@ typedef struct program_s {
 	shader_t ** shaders;
 	GLsizei shadercount;
 } program_t;
+
+
+//flags
+//1 = copy search
+//2 = copy replace
+int addRule(char ** search, char ** replace, int type, int flags){
+	if(!type|| !search || !replace || !search[0] || !replace[0]) return FALSE;
+	numrules++;
+	listrules = realloc(listrules, numrules * sizeof(rule_t));
+	rule_t *rl = &listrules[numrules-1];
+	rl->type = type;
+	int i;
+	if(flags & 1){
+		//count number of em
+		for(i = 0; search[i]; i++);
+		rl->search = malloc((i+1) * sizeof(char *));
+		//now copy them over
+		for(i = 0; search[i]; i++){
+			size_t sz = strlen(search[i])+1;
+			rl->search[i] = malloc(sz);
+			memcpy(rl->search[i], search[i], sz);
+		}
+		rl->search[i] = 0;
+	} else {
+		rl->search = search;
+	}
+	if(flags & 2){
+		//count number of em
+		for(i = 0; replace[i]; i++);
+		rl->replace = malloc((i+1) * sizeof(char *));
+		//now copy them over
+		for(i = 0; replace[i]; i++){
+			size_t sz = strlen(replace[i])+1;
+			rl->replace[i] = malloc(sz);
+			memcpy(rl->replace[i], replace[i], sz);
+		}
+		rl->replace[i] = 0;
+	} else {
+		rl->replace = replace;
+	}
+	//rule is there
+	return numrules;
+}
 
 
 
@@ -87,6 +135,7 @@ void APIENTRY glShaderSource(GLuint shader, GLsizei count, const GLchar ** strin
 			memcpy(sh->strings[i], string[i], len);
 			sh->strings[i][len] = 0;
 			puts(sh->strings[i]);
+
 //			puts(string[i]);
 		} else {
 			sh->strings[i] = 0;
@@ -94,8 +143,59 @@ void APIENTRY glShaderSource(GLuint shader, GLsizei count, const GLchar ** strin
 		printf("%i\n", i);
 	}
 	printf("End shader source\n");
-	sh->type = 2;
+
+	//check rules
+	///its first rule first applied
+	//i should probably figure out a better rule system... regex maybe?
+
+	for(i = 0; i < numrules; i++){
+		rule_t rule = listrules[i];
+		if(!rule.type) continue;
+		if(!rule.search || !rule.replace) continue;
+		int z;
+		for(z = 0; z < count; z++){
+			char * search = 0;
+			if(rule.search[1]){
+				if(!rule.search[z]) break;	// found end of our searchlist
+				search = rule.search[z];
+			} else search = rule.search[0];		//just one search, global
+			char * replace = 0;
+			if(rule.replace[1]){
+				if(!rule.replace[z]) break;	// found end of our searchlist
+				replace = rule.replace[z];
+			} else replace = rule.replace[0];		//just one search, global
+
+
+			char * ststring = sh->strings[z];
+			GLint len = sh->length[z];
+			if(!ststring) continue;
+			char *stdstring = ststring;
+			char *spstring = search;
+			while(*stdstring){
+				if(*stdstring == *spstring){
+					spstring++;
+					if(!*spstring){// reached the end of the search string, FOUND!
+						printf("Found %s in shader %i on line %i %s\n", search, shader, z, stdstring);
+						switch(rule.type){
+							case 1 :
+							//todo
+								break;
+							case 2 :
+							//todo
+								break;
+							case 3 :
+							//todo
+								break;
+						}
+					}
+				} else spstring = search;
+				stdstring++;
+			}
+		}
+	}
+
 	glShaderSource_orig(shader, count, string, length);
+	sh->type = 2;
 	printf("End shader\n");
 }
 
