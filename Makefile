@@ -1,7 +1,7 @@
 CC = gcc
 LDFLAGS =-ldl -shared -Wl,-soname,gloverrides.so
 CFLAGS = -Wall -Ofast -fstrict-aliasing -march=native -fPIC
-OBJECTS = gloverrides.o stringlib.o framerate.o shader.o state.o mathlib.o color.o
+OBJECTS = gloverrides.o stringlib.o framerate.o shader.o state.o mathlib.o color.o misc.o
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<

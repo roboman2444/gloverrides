@@ -15,6 +15,7 @@
 #include "shader.h"
 #include "state.h"
 #include "color.h"
+#include "misc.h"
 
 #define HOOKDLSYM
 
@@ -75,6 +76,10 @@ __GLXextFuncPtr glXGetProcAddress(const GLubyte * procname){
 		if(!glXSwapIntervalSGI_orig)glXSwapIntervalSGI_orig = glXGetProcAddress_orig((GLubyte *)"glXSwapIntervalSGI");
 		printf("replaced %s\n", procname);
 		return (__GLXextFuncPtr)glXSwapIntervalSGI;
+	} else if(string_testEqualN("glXChooseFBConfig", (char*)procname, 17)){
+		if(!glXChooseFBConfig_orig)glXChooseFBConfig_orig = glXGetProcAddress_orig((GLubyte *)"glXChooseFBConfig");
+		printf("replaced %s\n", procname);
+		return (__GLXextFuncPtr)glXChooseFBConfig;
 	} else if(string_testEqualN("glCreateShader", (char*)procname, 14)){
 		if(!glCreateShader_orig)glCreateShader_orig = glXGetProcAddress_orig((GLubyte *)"glCreateShader");
 		printf("replaced %s\n", procname);
@@ -108,6 +113,14 @@ extern void * dlsym(void * handle, const char * symbol){
 //		printf("--- HOOK GLXGETPROCADDRESS\n");
 		glutGetProcAddress_orig = real_dlsym(handle, "glutGetProcAddress");
 		return glutGetProcAddress;
+	} else if(string_testEqualN(symbol, "glXSwapBuffers", 14)){
+		glXSwapBuffers_orig = real_dlsym(handle, "glXSwapBuffers");
+//		printf("replaced %s\n", symbol);
+		return (__GLXextFuncPtr)glXSwapBuffers;
+	} else if(string_testEqualN(symbol, "glXChooseFBConfig", 17)){
+		glXChooseFBConfig_orig = real_dlsym(handle, "glXChooseFBConfig");
+//		printf("replaced %s\n", symbol);
+		return (__GLXextFuncPtr)glXChooseFBConfig;
 	}
 	return ret;
 }
