@@ -5,6 +5,8 @@
 
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include <GLFW/glfw3.h>
+
 #include "misc.h"
 
 #include "globaldefs.h"
@@ -12,12 +14,19 @@
 
 #include "state.h"
 
-GLXFBConfig * (*glXChooseFBConfig_orig) (Display *dpy, int screen, const int * attrib_list, int * nelements);
+GLXFBConfig * (*glXChooseFBConfig_orig) (Display *dpy, int screen, const int * attrib_list, int * nelements) = NULL;
+GLFWwindow * (*glfwCreateWindow_orig)(int width ,int height, const char * title, GLFWmonitor * monitor, GLFWwindow * share) = NULL;
 
 
 GLXFBConfig * glXChooseFBConfig(Display *dpy, int screen, const int * attrib_list, int * nelements){
 	printf("yolo\n");
 	return glXChooseFBConfig_orig(dpy, screen, attrib_list, nelements);
+}
+
+GLFWwindow * glfwCreateWindow(int width ,int height, const char * title, GLFWmonitor * monitor, GLFWwindow * share){
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	if(!glfwCreateWindow_orig) init();
+	return glfwCreateWindow_orig(width, height, title, monitor, share);
 }
 
 /*

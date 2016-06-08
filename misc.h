@@ -1,6 +1,7 @@
 #ifndef MISCHEADER
 #define MISCHEADER
 	extern GLXFBConfig * (*glXChooseFBConfig_orig)(Display *dpy, int screen, const int * attrib_list, int *nelements);
+	extern GLFWwindow * (*glfwCreateWindow_orig)(int width, int height, const char * title, GLFWmonitor * monitor, GLFWwindow * share);
 
 /*
 	extern void (*glXSwapInterval_orig)(Display *dpy, GLXDrawable drawable, int interval);

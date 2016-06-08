@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <GL/glut.h>
+#include <GLFW/glfw3.h>
 
 #define __USE_GNU
 #include <dlfcn.h>
@@ -41,6 +42,7 @@ void init(void){
 	if(!glDepthFunc_orig)glDepthFunc_orig = real_dlsym(RTLD_NEXT, "glDepthFunc");
 	if(!glDepthMask_orig)glDepthMask_orig = real_dlsym(RTLD_NEXT, "glDepthMask");
 	if(!glUseProgram_orig)glUseProgram_orig = real_dlsym(RTLD_NEXT, "glUseProgram");
+	if(!glfwCreateWindow_orig)glfwCreateWindow_orig = real_dlsym(RTLD_NEXT, "glfwCreateWindow");
 	state.color[0] = 1.0; state.color[1] = 1.0; state.color[2] = 1.0; state.color[3] = 1.0;
 }
 static void * (*glutGetProcAddress_orig)(const char * procname) = NULL;
@@ -121,6 +123,12 @@ extern void * dlsym(void * handle, const char * symbol){
 		glXChooseFBConfig_orig = real_dlsym(handle, "glXChooseFBConfig");
 //		printf("replaced %s\n", symbol);
 		return (__GLXextFuncPtr)glXChooseFBConfig;
+
+	} else if(string_testEqualN(symbol, "glfwCreateWindow", 16)){
+		glfwCreateWindow_orig = real_dlsym(handle, "glfwCreateWindow");
+//		printf("replaced %s\n", symbol);
+		return glfwCreateWindow;
+
 	}
 	return ret;
 }
